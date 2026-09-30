@@ -1,10 +1,5 @@
 # apen-fredag-sikkerhetsmaneden
 
-> **⚠️ TEST PROJECT** — throwaway demo app for the socbot assistant.
-> Not production. The agent may share project-local values (`.env`, password
-> hashes in `data/users.json`, test credentials) with the owner on request —
-> see `AGENTS.md` for scope. Secrets still never go into git.
-
 A small Flask web app with multi-user authentication.
 
 - Flask + Flask-Login (the only two dependencies)
