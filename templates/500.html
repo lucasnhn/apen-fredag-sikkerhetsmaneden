@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}500 · apen-fredag{% endblock %}
+{% block content %}
+<div class="card center">
+  <h1>500</h1>
+  <p class="dim">Something inside us is not as secure as it claims to be.
+  Nothing has been leaked (we checked). Please try again.</p>
+  <a class="button" href="{{ url_for('index') }}">Go back</a>
+</div>
+{% endblock %}

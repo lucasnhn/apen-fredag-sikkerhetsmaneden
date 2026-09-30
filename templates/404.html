@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}404 · apen-fredag{% endblock %}
+{% block content %}
+<div class="card center">
+  <h1>404</h1>
+  <p class="dim">This page has a higher security clearance than you do.</p>
+  <a class="button" href="{{ url_for('index') }}">Back to safety</a>
+</div>
+{% endblock %}

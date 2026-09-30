@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}dashboard · apen-fredag{% endblock %}
+{% block content %}
+<div class="welcome card">
+  <h1>Hei, {{ username }}! 🛡️</h1>
+  <p class="dim">You are signed in. The cookie is watching you.
+  (It's HttpOnly, so it can't peek at you back.)</p>
+</div>
+
+<div class="grid">
+  <div class="card clearance">
+    <h2>Security clearance</h2>
+    <div class="badge">CLEARANCE LEVEL: <strong>SIKKER</strong></div>
+    <div class="bar"><div class="fill" id="clearance-fill" style="width:0%"></div></div>
+    <div class="dim" id="clearance-label">recalibrating…</div>
+    <p class="dim small">Verified by PBKDF2-SHA256, 200 000 rounds. Slow is a feature.</p>
+  </div>
+
+  <div class="card session">
+    <h2>Session facts (real data, presented casually)</h2>
+    <table>
+      <tr><td class="dim">Signed in</td><td>{{ login_time }}</td></tr>
+      <tr><td class="dim">Remember me</td><td>{{ "yes — 30 days of trust" if remember else "no — this tab only" }}</td></tr>
+      <tr><td class="dim">Cookie policy</td><td>SameSite=Lax, HttpOnly, signed with a 64-hex-digit secret</td></tr>
+      <tr><td class="dim">User agent</td><td class="mono">{{ user_agent }}…</td></tr>
+    </table>
+  </div>
+
+  <div class="card ticker">
+    <h2>Status</h2>
+    <div class="tickerline" id="ticker">All systems nominal.</div>
+    <p class="dim small">Updates every 5 seconds. No real incidents. Ever.</p>
+  </div>
+
+  <div class="card tip">
+    <h2>Today's security tip</h2>
+    <div class="tipline" id="tip">Don't reuse passwords. Even across tabs.</div>
+    <button class="secondary" onclick="nextTip()">New tip</button>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}
