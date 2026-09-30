@@ -56,8 +56,9 @@ login_manager.login_message_category = "info"
 
 
 @login_manager.user_loader
-def load_user(user_id: str) -> User | None:
-    return store.get(int(user_id))
+def load_user(user_id: str) -> "AuthUser | None":
+    user = store.get(int(user_id))
+    return AuthUser(user) if user is not None else None
 
 
 class AuthUser(UserMixin):
@@ -66,7 +67,6 @@ class AuthUser(UserMixin):
     def __init__(self, user: User):
         self.user = user
         self.id = str(user.id)
-        self.is_active = True
 
     @property
     def username(self) -> str:
@@ -140,8 +140,10 @@ def inject_csrf():
 
 
 @app.template_filter("human_time")
-def human_time(iso: str) -> str:
+def human_time(iso) -> str:
     from datetime import datetime
+    if not iso:
+        return "unknown"
     return datetime.fromisoformat(iso).strftime("%Y-%m-%d %H:%M")
 
 
@@ -224,7 +226,7 @@ def dashboard():
         username=current_user.username,
         login_time=session.get("login_time", "unknown"),
         user_agent=request.headers.get("User-Agent", "")[:60],
-        remember=bool(request.cookies.get(login_manager.remember_cookie_name or "remember")),
+        remember="remember" in request.cookies,
     )
 
 
@@ -240,13 +242,13 @@ def profile():
         user = store.get(current_user.id)
         if not user or not store.check_password(user, current):
             flash("Current password is incorrect.", "error")
-            return render_template("profile.html"), 400
+            return render_template("profile.html", created_at=user.created_at if user else None), 400
         if not valid_password(new):
             flash("New password must be at least 8 characters.", "error")
-            return render_template("profile.html"), 400
+            return render_template("profile.html", created_at=user.created_at), 400
         if new != confirm:
             flash("New passwords do not match.", "error")
-            return render_template("profile.html"), 400
+            return render_template("profile.html", created_at=user.created_at), 400
         store.change_password(user, new)
         flash("Password updated.", "success")
         return redirect(url_for("profile"))

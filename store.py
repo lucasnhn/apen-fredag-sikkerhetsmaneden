@@ -68,7 +68,7 @@ class UserStore:
         raw = data["users"].get(str(user_id))
         if raw is None:
             return None
-        return User(id=user_id, **raw)
+        return User(**{**raw, "id": user_id})
 
     def get_by_username(self, username: str) -> User | None:
         uname = username.strip().lower()
@@ -76,7 +76,7 @@ class UserStore:
             data = self._read()
         for raw in data["users"].values():
             if raw["username"].lower() == uname:
-                return User(id=int(raw["id"]), **raw)
+                return User(**raw)
         return None
 
     def create(self, username: str, password: str) -> User:
