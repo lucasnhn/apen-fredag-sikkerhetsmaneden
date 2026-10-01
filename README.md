@@ -5,7 +5,7 @@ A small Flask web app with multi-user authentication.
 - Flask + Flask-Login (the only two dependencies)
 - JSON file user store (no database)
 - PBKDF2-SHA256 password hashing (stdlib)
-- Signed-cookie sessions, CSRF protection, login rate limiting
+- Signed-cookie sessions, CSRF protection
 
 ## Setup
 
@@ -35,7 +35,7 @@ USE_SSL=1 ./venv/bin/python app.py   # or: ./venv/bin/python app.py --ssl
 
 ## Files
 
-- `app.py` — routes, auth logic, rate limiting
+- `app.py` — routes, auth logic
 - `store.py` — JSON user store (create/lookup/update, password hashing)
 - `templates/` — Jinja pages
 - `static/style.css` — plain CSS, no build step

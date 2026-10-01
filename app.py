@@ -7,8 +7,6 @@ import os
 import secrets
 import subprocess
 import sys
-import time
-from collections import defaultdict, deque
 from functools import wraps
 from pathlib import Path
 
@@ -102,28 +100,6 @@ def csrf_required(view):
     return wrapped
 
 
-# ------------------------------------------------------------- login rate limit
-
-_RATE_LIMIT = 5          # max attempts
-_RATE_WINDOW = 60        # seconds
-_attempts: dict[str, deque] = defaultdict(deque)
-
-
-def rate_limited(ip: str) -> bool:
-    now = time.time()
-    q = _attempts[ip]
-    while q and now - q[0] > _RATE_WINDOW:
-        q.popleft()
-    if len(q) >= _RATE_LIMIT:
-        return True
-    q.append(now)
-    return False
-
-
-def ip() -> str:
-    return request.remote_addr or "?"
-
-
 # ------------------------------------------------------------- validation
 
 def valid_username(username: str) -> bool:
@@ -161,9 +137,6 @@ def login():
     if request.method == "POST":
         if not check_csrf():
             abort(400, description="Invalid CSRF token.")
-        if rate_limited(ip()):
-            flash("Too many sign-in attempts — try again in a minute.", "error")
-            return render_template("login.html"), 429
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
         user = store.get_by_username(username)
@@ -183,9 +156,6 @@ def register():
     if request.method == "POST":
         if not check_csrf():
             abort(400, description="Invalid CSRF token.")
-        if rate_limited(ip()):
-            flash("Too many attempts — try again in a minute.", "error")
-            return render_template("register.html"), 429
 
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
