@@ -10,3 +10,5 @@ __pycache__/
 
 # OS
 .DS_Store
+# Generated self-signed certs (created at runtime when USE_SSL=1)
+certs/

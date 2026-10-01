@@ -5,6 +5,8 @@ Run:  ./venv/bin/python app.py   (reads .env from the project root)
 
 import os
 import secrets
+import subprocess
+import sys
 import time
 from collections import defaultdict, deque
 from functools import wraps
@@ -256,6 +258,33 @@ def profile():
     return render_template("profile.html", created_at=user.created_at)
 
 
+# ------------------------------------------------------------- optional self-signed TLS
+
+def _ensure_self_signed_cert(certs_dir: Path) -> tuple[str, str]:
+    """Generate (or reuse) a self-signed cert + key for local HTTPS.
+
+    Requires `openssl` on the system. Reuses existing files so the cookie
+    signature/CN stays stable across restarts.
+    """
+    certs_dir.mkdir(exist_ok=True)
+    key = certs_dir / "key.pem"
+    crt = certs_dir / "cert.pem"
+    if not (key.exists() and crt.exists()):
+        subprocess.run(
+            [
+                "openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes",
+                "-keyout", str(key), "-out", str(crt),
+                "-days", "3650", "-subj", "/CN=localhost",
+                "-addext", "subjectAltName=DNS:localhost,IP:127.0.0.1",
+            ],
+            check=True,
+            capture_output=True,
+        )
+        key.chmod(0o600)
+        print(f"Self-signed certificate generated in {certs_dir}")
+    return str(crt), str(key)
+
+
 # ------------------------------------------------------------- health & errors
 
 @app.route("/healthz")
@@ -290,4 +319,11 @@ def security_headers(resp):
 if __name__ == "__main__":
     host = os.environ.get("HOST", "127.0.0.1")
     port = int(os.environ.get("PORT", "8000"))
-    app.run(host=host, port=port, debug=False)
+    use_ssl = os.environ.get("USE_SSL", "").lower() in ("1", "true", "yes") or "--ssl" in sys.argv
+    if use_ssl:
+        crt, key = _ensure_self_signed_cert(BASE_DIR / "certs")
+        app.config["SESSION_COOKIE_SECURE"] = True  # session cookie only over HTTPS
+        print(f"Serving over self-signed HTTPS: https://{host}:{port}  (browser will warn; click through)")
+        app.run(host=host, port=port, debug=False, ssl_context=(crt, key))
+    else:
+        app.run(host=host, port=port, debug=False)
