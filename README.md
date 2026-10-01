@@ -27,6 +27,8 @@ USE_SSL=1 ./venv/bin/python app.py   # or: ./venv/bin/python app.py --ssl
 ```
 
 - On first run a self-signed cert + key are generated with `openssl` and stored in `certs/` (gitignored); they are reused across restarts.
+- Defaults to port **443** (so `https://localhost` works). Set `PORT` to override; e.g. `PORT=8443` avoids the privileged port.
+- Binding 443 needs root — run `sudo ./venv/bin/python app.py --ssl`, or use a high port to stay unprivileged.
 - The session cookie gets the `Secure` flag, so cookies only travel over HTTPS.
 - Your browser will warn that the certificate is not trusted — expected for a self-signed cert; click through to continue.
 - Requires `openssl` on the system.

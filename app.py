@@ -318,8 +318,10 @@ def security_headers(resp):
 
 if __name__ == "__main__":
     host = os.environ.get("HOST", "127.0.0.1")
-    port = int(os.environ.get("PORT", "8000"))
     use_ssl = os.environ.get("USE_SSL", "").lower() in ("1", "true", "yes") or "--ssl" in sys.argv
+    # With self-signed HTTPS the conventional default is 443; an explicit PORT always wins.
+    default_port = "443" if use_ssl else "8000"
+    port = int(os.environ.get("PORT", default_port))
     if use_ssl:
         crt, key = _ensure_self_signed_cert(BASE_DIR / "certs")
         app.config["SESSION_COOKIE_SECURE"] = True  # session cookie only over HTTPS
