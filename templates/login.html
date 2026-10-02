@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}sign in · apen-fredag{% endblock %}
 {% block content %}
+<img src="{{ url_for('static', filename='cat.png') }}" alt="kattebilde" class="cat">
 <div class="card center">
   <h1>Sign in</h1>
   <p class="dim">Enter. If it works, the cookie is watching you. (It's HttpOnly, so it can't peek back.)</p>

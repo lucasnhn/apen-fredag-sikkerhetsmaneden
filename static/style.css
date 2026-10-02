@@ -168,3 +168,11 @@ table tr:last-child td { border-bottom: none; }
   100% { opacity: 1; transform: translateY(0); }
 }
 .tipline { font-size: 16px; margin-bottom: 10px; }
+.cat {
+  display: block;
+  max-width: 420px;
+  width: 100%;
+  margin: 24px auto 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
