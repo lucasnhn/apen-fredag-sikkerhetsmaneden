@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}middagsforslag · apen-fredag{% endblock %}
+{% block content %}
+<div class="card center">
+  <h1>Middagsforslaggenerator 🍽️</h1>
+  <p class="dim">Slutt på «hvordan spiser vi?»-møtene. La en maskin ta ansvaret.</p>
+  <div class="welcome" style="margin: 20px 0; font-size: 19px; text-align: center;">
+    I dag: <strong>{{ idea }}</strong>
+  </div>
+  <p><a class="button" href="{{ url_for('matt') }}">Gjør det om 🎲</a></p>
+  <p class="dim small">Alle forslag ({{ ideas|length }}):</p>
+  <ul>
+    {% for i in ideas %}<li>{{ i }}</li>{% endfor %}
+  </ul>
+</div>
+{% endblock %}

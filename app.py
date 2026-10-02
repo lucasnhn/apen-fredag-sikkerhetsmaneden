@@ -4,6 +4,7 @@ Run:  ./venv/bin/python app.py   (reads .env from the project root)
 """
 
 import os
+import random
 import secrets
 import subprocess
 import sys
@@ -256,6 +257,36 @@ def _ensure_self_signed_cert(certs_dir: Path) -> tuple[str, str]:
 
 
 # ------------------------------------------------------------- health & errors
+
+# ------------------------------------------------------------- lunch suggestions
+
+LUNCH_IDEAS = [
+    "Kylling wrap med gresk yoghurt og grillet grønnsaker",
+    "Pastasalat med tonn, tomat og fersk basilikum",
+    "Laks med potetmos og broccolini",
+    "Kyllingsuppe med ris og grønnsaker",
+    "Biff med stekt løk, bacon og gullstekt poteter",
+    "Reisthai med kylling og soyasaus",
+    "Omelett med spinat, champignon og feta",
+    "Lakserull med urdedressing og rødløk",
+    "Penne med safran-saus, bacon og broccolini",
+    "Kartoffelgrateng med ost, egg og rømme",
+    "Falafelwrap med hummus og grillgrønnsaker",
+    "Kyllingschnitzel med grønnsaker og smørstekt poteter",
+    "Bønnekryddersalat med egg og dill",
+    "Ostegrateng med erter og bacon",
+    "Pasta alfredo med rødkål og parmesan",
+    "Grillet fiskefilet med dillsaus og nykokte poteter",
+]
+
+
+@app.route("/matt")
+def matt():
+    idea = request.args.get("pick")
+    if not idea or idea not in LUNCH_IDEAS:
+        idea = random.choice(LUNCH_IDEAS)
+    return render_template("matt.html", idea=idea, ideas=LUNCH_IDEAS)
+
 
 @app.route("/healthz")
 def healthz():

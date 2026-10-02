@@ -13,6 +13,7 @@
       {% if current_user.is_authenticated %}
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('matt') }}">Middag?</a>
         <form method="post" action="{{ url_for('logout') }}" class="inline">
           <input type="hidden" name="csrf" value="{{ csrf_token }}">
           <button type="submit" class="linkbtn">Sign out ({{ current_user.username }})</button>
